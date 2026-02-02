@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will you be my Valentine?</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@500&display=swap');
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #fce4ec;
+            font-family: 'Fredoka', 'Comic Sans MS', sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .container {
+            text-align: center;
+            position: relative;
+            width: 90%;
+            max-width: 500px;
+            padding: 20px;
+        }
+
+        h1 {
+            color: #d81b60;
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            text-shadow: 2px 2px 4px rgba(240, 98, 146, 0.5);
+        }
+
+        .img-container img {
+            width: 300px;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 30px;
+            box-shadow: 0 10px 25px rgba(233, 30, 99, 0.25);
+            background-color: #fff0f4;
+            padding: 10px;
+        }
+
+        .btn-group {
+            position: relative;
+            min-height: 60px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1.2rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: inherit;
+            font-weight: bold;
+        }
+
+        #yesBtn {
+            background-color: #4caf50;
+            color: white;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+            z-index: 10;
+        }
+
+        #yesBtn:hover {
+            transform: scale(1.1);
+            background-color: #43a047;
+        }
+
+        #noBtn {
+            background-color: #ef5350;
+            color: white;
+            box-shadow: 0 4px 10px rgba(239, 83, 80, 0.3);
+            position: relative;
+            transition: top 0.2s, left 0.2s; 
+        }
+    </style>
+</head>
+<body>
+
+    <audio id="bgMusic" loop preload="auto">
+        <source src="song.mp3" type="audio/mpeg">
+    </audio>
+
+    <div class="container">
+        <div class="img-container">
+            <img id="mainImage" src="roses.png" alt="Valentine Roses">
+        </div>
+        <h1 id="question">Will you be my Valentine?</h1>
+        <div class="btn-group">
+            <button id="yesBtn">Yes</button>
+            <button id="noBtn">No</button>
+        </div>
+    </div>
+
+    <script>
+        const yesBtn = document.getElementById('yesBtn');
+        const noBtn = document.getElementById('noBtn');
+        const question = document.getElementById('question');
+        const mainImage = document.getElementById('mainImage');
+        const audio = document.getElementById('bgMusic');
+
+        const phrases = [
+            "No", "Are you sure?", "Really?", "Think again!", 
+            "Pookie please?", "Last chance!", "Don't break my heart ;(",
+            "I'll cry...", "Look at those roses!", "Pretty please?",
+            "Huh??", "You can't mean that!", "Try the green button!"
+        ];
+
+        // --- MUSIC CONTROL ---
+        // We use 'mousedown' instead of 'click' because it fires faster
+        function playAudio() {
+            // Check if audio is already playing to avoid errors
+            if (audio.paused) {
+                audio.play().catch(error => {
+                    console.log("Audio play prevented by browser (waiting for interaction).");
+                });
+            }
+        }
+
+        // Trigger on ANY interaction with the page
+        // 'mousedown' is faster than 'click'
+        document.body.addEventListener('mousedown', playAudio);
+        document.body.addEventListener('touchstart', playAudio);
+        document.body.addEventListener('keydown', playAudio);
+
+        // --- YES BUTTON ACTION ---
+        yesBtn.addEventListener('click', () => {
+            playAudio(); // Just in case
+            question.innerHTML = "YAY! Best Valentine Ever! 💖";
+            mainImage.src = "https://media.tenor.com/gUiu1zyxfzYAAAAi/bear-kiss-bear-kisses.gif";
+            noBtn.remove();
+            
+            yesBtn.innerText = "I love you! 🥂";
+            yesBtn.style.backgroundColor = "#e91e63";
+            yesBtn.style.transform = "scale(1.1)";
+            yesBtn.style.pointerEvents = "none";
+
+            document.body.style.backgroundColor = "#ffcdd2";
+        });
+
+        // --- NO BUTTON MOVEMENT ---
+        noBtn.addEventListener('mouseover', () => {
+            // Try to play audio on hover, but browsers might block it
+            // The user will likely have to click somewhere first
+            playAudio();
+            moveButton();
+        });
+        
+        noBtn.addEventListener('touchstart', () => {
+            playAudio();
+            moveButton();
+        });
+
+        function moveButton() {
+            const randomPhrase = phrases[Math.floor(Math.random() * phrases.length)];
+            noBtn.innerText = randomPhrase;
+
+            const maxWidth = window.innerWidth - noBtn.offsetWidth - 20;
+            const maxHeight = window.innerHeight - noBtn.offsetHeight - 20;
+
+            const randomX = Math.max(10, Math.floor(Math.random() * maxWidth));
+            const randomY = Math.max(10, Math.floor(Math.random() * maxHeight));
+
+            noBtn.style.position = 'fixed'; 
+            noBtn.style.left = randomX + 'px';
+            noBtn.style.top = randomY + 'px';
+        }
+    </script>
+</body>
+</html>
